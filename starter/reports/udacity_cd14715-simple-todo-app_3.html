@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Review Report</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 24px;
+      background: #f8f9fa;
+      color: #212529;
+    }
+    h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 12px; }
+    .summary {
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin: 24px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+    }
+    .metric { text-align: center; }
+    .metric-value { font-size: 2em; font-weight: bold; color: #3498db; }
+    .metric-label { color: #6c757d; font-size: 0.9em; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 12px; margin: 8px 0; border-radius: 4px; background: white; }
+    .rec-critical { border-left: 4px solid #e74c3c; }
+    .rec-high { border-left: 4px solid #f39c12; }
+    .rec-medium { border-left: 4px solid #3498db; }
+    .rec-low { border-left: 4px solid #27ae60; }
+    .priority { font-weight: bold; margin-right: 8px; }
+    .rec-critical .priority { color: #e74c3c; }
+    .rec-high .priority { color: #f39c12; }
+    .rec-medium .priority { color: #3498db; }
+    .rec-low .priority { color: #27ae60; }
+    footer { text-align: center; color: #6c757d; margin-top: 32px; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Code Review Report</h1>
+  
+  <div class="summary">
+    <div class="metric">
+      <div class="metric-value">25</div>
+      <div class="metric-label">Overall Score</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">1</div>
+      <div class="metric-label">Files Reviewed</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">2</div>
+      <div class="metric-label">Critical Issues</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">10</div>
+      <div class="metric-label">Tests Needed</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">8</div>
+      <div class="metric-label">Refactorings</div>
+    </div>
+  </div>
+
+  <h2>🎯 Top Recommendations</h2>
+  <ul>
+      <li class="rec-critical">
+        <span class="priority">[CRITICAL]</span>
+        <strong>security</strong>: src/premium.ts:18 Storing raw credit card details (cardNumber, cvv) in plain text violates PCI DSS compliance. This interface encourages insecure handling of sensitive payment data. Suggested fix: Never handle raw card details in application code. Use a PCI-compliant payment gateway (Stripe, PayPal) that provides tokenized payment methods. Replace PaymentDetails with a token-based interface: { paymentToken: string; amount: number; }
+        <br><small>Files: src/premium.ts</small>
+      </li>
+    
+      <li class="rec-critical">
+        <span class="priority">[CRITICAL]</span>
+        <strong>security</strong>: src/premium.ts:127 Logging full payment card numbers (even partially via error context) and processing raw card data violates PCI DSS. The chargeCard function simulates storing card data in the database. Suggested fix: Remove all card processing logic. Integrate with a compliant payment processor (e.g., Stripe SDK) that handles card data externally and returns payment tokens. Never store or log card numbers, CVV, or full expiry dates.
+        <br><small>Files: src/premium.ts</small>
+      </li>
+    
+      <li class="rec-high">
+        <span class="priority">[HIGH]</span>
+        <strong>bug-risk</strong>: src/premium.ts:93 Date comparison logic is flawed. The expiry date check creates a Date object at the first day of the expiry month, but cards are valid through the end of that month. This will incorrectly reject valid cards. Suggested fix: Set the date to the last day of the expiry month: `const expiryDateObj = new Date(2000 + parseInt(year), parseInt(month), 0);` (day 0 gives last day of previous month, so use month without -1). Better: `new Date(2000 + parseInt(year), parseInt(month), 1)` for first day of next month.
+        <br><small>Files: src/premium.ts</small>
+      </li>
+    
+      <li class="rec-high">
+        <span class="priority">[HIGH]</span>
+        <strong>bug-risk</strong>: src/premium.ts:93 Year 2000 assumption will break after 2099 (when YY rolls over). Additionally, parseInt without radix can cause unexpected parsing behavior. Suggested fix: Use explicit radix and handle century rollover: `const currentYear = new Date().getFullYear(); const fullYear = 2000 + parseInt(year, 10); const expiryDateObj = new Date(fullYear, parseInt(month, 10) - 1);` Consider validating that expiry year is within reasonable range (e.g., not more than 20 years in future).
+        <br><small>Files: src/premium.ts</small>
+      </li>
+    
+      <li class="rec-high">
+        <span class="priority">[HIGH]</span>
+        <strong>bug-risk</strong>: src/premium.ts:169 Similar date comparison bug as line 93. Subscription expiry check compares validUntil < new Date(), which may incorrectly expire subscriptions that are valid through the current date. Suggested fix: Use <= for inclusive comparison or compare only the date portion: `if (validUntil.getTime() < Date.now())` or better, clarify the business logic: should subscriptions expire at the start or end of the validUntil date?
+        <br><small>Files: src/premium.ts</small>
+      </li>
+    </ul>
+
+  <footer>
+    Generated at 2026-11-22T14:30:06.998Z • Duration: 283110ms
+  </footer>
+</body>
+</html>
