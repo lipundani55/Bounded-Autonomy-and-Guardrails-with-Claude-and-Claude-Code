@@ -1,7 +1,7 @@
 import { query } from '@anthropic-ai/claude-agent-sdk';
 
 import { reviewSubagents } from './agents/index.js';
-import { githubTools, mcpServersConfig } from './config/mcp.config.js';
+import { eslintTools, githubTools, mcpServersConfig } from './config/mcp.config.js';
 import { buildOrchestratorPrompt } from './prompts/orchestrator.prompt.js';
 import {
   ReviewReport,
@@ -245,7 +245,6 @@ export class CodeReviewOrchestrator {
     const toolNames = new Map<string, string>();
     const toolStarts = new Map<string, { tool: string; agent?: string; startedAt: number }>();
     let structuredOutput: unknown;
-
     for await (const message of query({
       prompt: buildOrchestratorPrompt(owner, repo, prNumber),
       options: {
@@ -256,8 +255,8 @@ export class CodeReviewOrchestrator {
         },
         agents: reviewSubagents,
         abortController,
-        mcpServers: { github: mcpServersConfig.github },
-        allowedTools: ['Task', 'Agent', 'Skill', ...githubTools],
+        mcpServers: mcpServersConfig,
+        allowedTools: ['Task', 'Agent', 'Skill', ...githubTools, ...eslintTools],
         disallowedTools: ['Bash', 'Write', 'Edit', 'NotebookEdit'],
         permissionMode: 'dontAsk',
         settingSources: ['project'],
@@ -273,7 +272,7 @@ export class CodeReviewOrchestrator {
       for (const toolCall of getToolCalls(message)) {
         if (toolCall.toolUseId) toolNames.set(toolCall.toolUseId, toolCall.toolName);
         if (toolCall.agentName) invokedAgents.add(toolCall.agentName);
-        const tool = [...githubTools, 'Task', 'Agent', 'Skill'].includes(toolCall.toolName)
+        const tool = [...githubTools, ...eslintTools, 'Task', 'Agent', 'Skill'].includes(toolCall.toolName)
           ? toolCall.toolName : 'other';
         const agent = REQUIRED_AGENTS.find(name => name === toolCall.agentName);
         if (toolCall.toolUseId) {

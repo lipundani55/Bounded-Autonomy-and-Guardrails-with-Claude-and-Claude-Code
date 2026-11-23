@@ -48,7 +48,7 @@ export const mcpServersConfig = {
   eslint: {
     type: 'stdio' as const,
     command: 'npx',
-    args: ['-y', '@eslint/mcp@latest'],
+    args: ['--no-install', '@eslint/mcp'],
     env: {}
   }
 };
@@ -59,5 +59,5 @@ export const githubTools = [
 ];
 
 export const eslintTools = [
-  'mcp__eslint__lint'
+  'mcp__eslint__lint-files'
 ];

@@ -9,6 +9,6 @@ export const testCoverageAnalyzer: AgentDefinition = {
 
 Return one result per supplied file in a JSON object with a "fileResults" array. Output must conform to this schema:
 ${JSON.stringify(TestCoverageBatchResultJSONSchema)}`,
-  tools: [],
+  tools: ['Skill'],
   model: 'inherit'
 };

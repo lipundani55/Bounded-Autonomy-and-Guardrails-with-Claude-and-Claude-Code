@@ -9,6 +9,6 @@ export const refactoringSuggester: AgentDefinition = {
 
 Return one result per supplied file in a JSON object with a "fileResults" array. Output must conform to this schema:
 ${JSON.stringify(RefactoringBatchResultJSONSchema)}`,
-  tools: [],
+  tools: ['Skill'],
   model: 'inherit'
 };

@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { query } from '@anthropic-ai/claude-agent-sdk';
 
 import { reviewSubagents } from '../src/agents/index.js';
-import { githubTools, mcpServersConfig } from '../src/config/mcp.config.js';
+import { eslintTools, githubTools, mcpServersConfig } from '../src/config/mcp.config.js';
 import { CodeReviewOrchestrator } from '../src/orchestrator.js';
 import { RateLimiter } from '../src/utils/rate-limiter.js';
 import { logger } from '../src/utils/logger.js';
@@ -163,7 +163,7 @@ describe('CodeReviewOrchestrator', () => {
       const input = vi.mocked(query).mock.calls[0]![0] as unknown as {
         prompt: string;
         options: {
-          agents: Record<string, { tools?: string[] }>;
+          agents: Record<string, { tools?: string[]; prompt: string }>;
           allowedTools: string[];
           mcpServers: Record<string, unknown>;
           model: string;
@@ -176,13 +176,19 @@ describe('CodeReviewOrchestrator', () => {
       expect(input.prompt).toContain('octocat/hello-world#123');
       expect(Object.keys(input.options.agents)).toEqual(agentNames);
       expect(input.options.agents['code-quality-analyzer']?.tools).toEqual(['Skill']);
-      expect(input.options.agents['test-coverage-analyzer']?.tools).toEqual([]);
-      expect(input.options.agents['refactoring-suggester']?.tools).toEqual([]);
+      expect(input.options.agents['test-coverage-analyzer']?.tools).toEqual(['Skill']);
+      expect(input.options.agents['refactoring-suggester']?.tools).toEqual(['Skill']);
+      for (const agentName of agentNames) {
+        expect(input.options.agents[agentName]?.prompt).toContain('"code-review"');
+        expect(input.options.agents[agentName]?.prompt).toContain('"documentation-review"');
+      }
       expect(input.options.allowedTools).toContain('Task');
       expect(input.options.allowedTools).toContain('Agent');
       expect(input.options.allowedTools).toContain('Skill');
       expect(input.options.allowedTools).toEqual(expect.arrayContaining(githubTools));
+      expect(input.options.allowedTools).toEqual(expect.arrayContaining(eslintTools));
       expect(input.options.mcpServers.github).toEqual(mcpServersConfig.github);
+      expect(input.options.mcpServers.eslint).toEqual(mcpServersConfig.eslint);
       expect(input.options.model).toBe('claude-test-model');
       expect(input.options.maxTurns).toBe(60);
       expect(input.options.permissionMode).toBe('dontAsk');

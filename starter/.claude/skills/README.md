@@ -12,6 +12,15 @@ Skills are markdown files that provide Claude with specialized knowledge for spe
   - Review this to understand the skill format
   - See how it provides best practices, common pitfalls, and output format
 
+## Review Skills
+
+- **code-review/** - Language-independent guidance for reviewing source code.
+- **documentation-review/** - Guidance for README files and other documentation.
+
+Each specialist is instructed to invoke the appropriate skill for the supplied
+files; a mixed batch may use both. Skills provide guidance, not proof that code
+was executed or tests were run.
+
 ## Your Task
 
 Create **3 additional skills** (minimum 2 required):

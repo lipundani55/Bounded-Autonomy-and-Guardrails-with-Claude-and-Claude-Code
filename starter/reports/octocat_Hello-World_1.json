@@ -1,0 +1,118 @@
+{
+  "pullRequest": {
+    "owner": "octocat",
+    "repo": "Hello-World",
+    "number": 1
+  },
+  "fileReviews": [
+    {
+      "file": "README",
+      "codeQuality": {
+        "file": "README",
+        "issues": [
+          {
+            "line": 2,
+            "severity": "medium",
+            "category": "maintainability",
+            "description": "Command and description are concatenated without separation, making the content difficult to read and parse.",
+            "suggestion": "Add whitespace or formatting between the command '$ mkdir ~/Hello-World' and its description 'Creates a directory for your project called \"Hello-World\" in your user directory'. Consider using a newline, colon, or dash separator."
+          },
+          {
+            "line": 3,
+            "severity": "medium",
+            "category": "maintainability",
+            "description": "Command and description are concatenated without separation, reducing readability.",
+            "suggestion": "Add whitespace or formatting between the command '$ cd ~/Hello-World' and its description. Use consistent formatting with other command descriptions."
+          },
+          {
+            "line": 4,
+            "severity": "medium",
+            "category": "maintainability",
+            "description": "Command and description are concatenated without separation, reducing readability.",
+            "suggestion": "Add whitespace or formatting between the command '$ git init' and its description. Maintain consistent formatting throughout the document."
+          },
+          {
+            "line": 6,
+            "severity": "low",
+            "category": "style",
+            "description": "File is missing a trailing newline character at end of file.",
+            "suggestion": "Add a newline character at the end of the file. This is a POSIX standard and prevents issues with certain tools and version control systems."
+          },
+          {
+            "line": 5,
+            "severity": "info",
+            "category": "maintainability",
+            "description": "Hardcoded path '/Users/your_user_directory/Hello-World/.git/' contains placeholder text that may confuse users.",
+            "suggestion": "Consider using a more generic placeholder like '/Users/<username>/Hello-World/.git/' or add a note explaining that 'your_user_directory' should be replaced with the actual username."
+          }
+        ],
+        "overallScore": 70,
+        "summary": "The README file contains basic Git setup instructions but suffers from formatting issues that significantly impact readability. The main problems are commands concatenated directly with their descriptions without any separator (lines 2-4), making the content difficult to parse. The file also lacks a trailing newline (line 6). While these are not critical defects, they reduce the document's usability and professionalism. The content itself is factually correct for Git initialization steps."
+      },
+      "testCoverage": {
+        "file": "README",
+        "hasTests": false,
+        "testFiles": [],
+        "untestedPaths": [],
+        "coverageEstimate": 0,
+        "summary": "This is a documentation/text file containing setup instructions for a Git project. Code coverage analysis is not applicable to non-executable documentation files. The file contains shell commands and explanatory text but no executable code, functions, classes, or branches that would require test coverage. No test gaps exist because there is no code to test."
+      },
+      "refactorings": {
+        "file": "README",
+        "suggestions": [],
+        "summary": "This is a plain text README file containing documentation and command examples. No code refactoring opportunities apply to this non-code file."
+      }
+    }
+  ],
+  "summary": {
+    "totalFiles": 1,
+    "overallScore": 70,
+    "criticalIssues": 0,
+    "highPriorityTests": 0,
+    "refactoringOpportunities": 0
+  },
+  "recommendations": [
+    {
+      "priority": "medium",
+      "category": "maintainability",
+      "description": "README:2 Command and description are concatenated without separation, making the content difficult to read and parse. Suggested fix: Add whitespace or formatting between the command '$ mkdir ~/Hello-World' and its description 'Creates a directory for your project called \"Hello-World\" in your user directory'. Consider using a newline, colon, or dash separator.",
+      "files": [
+        "README"
+      ]
+    },
+    {
+      "priority": "medium",
+      "category": "maintainability",
+      "description": "README:3 Command and description are concatenated without separation, reducing readability. Suggested fix: Add whitespace or formatting between the command '$ cd ~/Hello-World' and its description. Use consistent formatting with other command descriptions.",
+      "files": [
+        "README"
+      ]
+    },
+    {
+      "priority": "medium",
+      "category": "maintainability",
+      "description": "README:4 Command and description are concatenated without separation, reducing readability. Suggested fix: Add whitespace or formatting between the command '$ git init' and its description. Maintain consistent formatting throughout the document.",
+      "files": [
+        "README"
+      ]
+    },
+    {
+      "priority": "low",
+      "category": "style",
+      "description": "README:6 File is missing a trailing newline character at end of file. Suggested fix: Add a newline character at the end of the file. This is a POSIX standard and prevents issues with certain tools and version control systems.",
+      "files": [
+        "README"
+      ]
+    }
+  ],
+  "metadata": {
+    "analyzedAt": "2026-11-23T03:54:51.204Z",
+    "duration": 83299,
+    "agentVersions": {
+      "coordinator": "claude-agent-sdk",
+      "code-quality-analyzer": "claude-agent-sdk-agent",
+      "test-coverage-analyzer": "claude-agent-sdk-agent",
+      "refactoring-suggester": "claude-agent-sdk-agent"
+    }
+  }
+}
